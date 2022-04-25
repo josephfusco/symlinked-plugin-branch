@@ -1,0 +1,8 @@
+.spb-column-text {
+	background-color: #111;
+	border-radius: 3px;
+	color: #fff;
+	display: inline-block;
+	padding: 3px 9px;
+	white-space: nowrap;
+}
