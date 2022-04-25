@@ -1,0 +1,19 @@
+{
+    "name": "josephfusco/symlinked-plugin-branch",
+    "description": "Easily identify the current git branch of your symlinked WordPress plugins.",
+    "keywords": [
+        "wordpress",
+        "plugin",
+        "git"
+    ],
+    "homepage": "https://github.com/josephfusco/symlinked-plugin-branch",
+    "license": "GPLv2 or later",
+    "authors": [
+        {
+            "name": "Joseph Fusco",
+            "email": "hello@josephfus.co",
+            "homepage": "http://josephfus.co"
+        }
+    ],
+    "type": "wordpress-plugin"
+}
