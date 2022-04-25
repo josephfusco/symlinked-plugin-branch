@@ -7,7 +7,7 @@
         "git"
     ],
     "homepage": "https://github.com/josephfusco/symlinked-plugin-branch",
-    "license": "GPLv2 or later",
+    "license": "MIT",
     "authors": [
         {
             "name": "Joseph Fusco",
