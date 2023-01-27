@@ -2,4 +2,4 @@
 
 Easily identify the current git branch of your symlinked WordPress plugins.
 
-<img width="1517" alt="Screen Shot 2022-04-25 at 5 46 55 PM" src="https://user-images.githubusercontent.com/6676674/165180552-028d7042-0edf-4110-8ffa-8e7e06b97124.png">
+<img width="1112" alt="Screen Shot 2023-01-26 at 10 46 19 PM" src="https://user-images.githubusercontent.com/6676674/215005640-3e4eca5e-c3ca-49e5-8f2e-d1f3b3140f81.png">
