@@ -1,8 +1,42 @@
-.spb-column-text {
-	background-color: #111;
-	border-radius: 3px;
-	color: #fff;
-	display: inline-block;
-	padding: 3px 9px;
+.spb-root {
+	display: flex;
+	gap: 4px;
+	flex-direction: column;
 	white-space: nowrap;
+	line-height: 23px;
+	background-color: #ffb20f;
+	border-radius: 4px;
+	padding: 6px 0 0;
+	font-size: 13px;
+	overflow: hidden;
+	font-family: Consolas,Monaco,monospace;
+	direction: ltr;
+	unicode-bidi: embed;
+	font-weight: 700;
+}
+
+.spb-root code {
+	font-size: 80%;
+	background: none;
+	font-weight: 300;
+}
+
+.spb-row {
+	display: flex;
+	padding: 0 4px;
+}
+
+.spb-row-dark {
+	background-color: rgba(0,0,0,0.06);
+	box-shadow: inset 0 -1px 0px rgb(0 0 0 / 10%);
+}
+
+.spb-icon {
+	background-image: url("data:image/svg+xml;utf8, <svg fill='rgba(0,0,0,0.45)' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path d='M416 160a64 64 0 1 0-96 55c-3 29-20 37-75 49-18 3-36 7-53 14V151a64 64 0 1 0-64 0v210a64 64 0 1 0 64 0c3-18 16-24 66-35 27-5 55-11 79-27 29-18 45-46 47-84a64 64 0 0 0 32-55ZM160 64a32 32 0 1 1-32 32 32 32 0 0 1 32-32Zm0 384a32 32 0 1 1 32-32 32 32 0 0 1-32 32Zm192-256a32 32 0 1 1 32-32 32 32 0 0 1-32 32Z'/></svg>");
+	background-position: contain;
+	background-repeat: no-repeat;
+	display: block;
+	margin-right: 3px;
+	height: 23px;
+	width: 23px;
 }
