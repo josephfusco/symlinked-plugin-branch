@@ -31,11 +31,10 @@ function enqueue_admin_styles_and_scripts( $hook ) {
         require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
     }
 
-    $plugin_data    = get_plugin_data( SYMLINKED_PLUGIN_BRANCH_FILE ); // Replace this with your main plugin file.
+    $plugin_data    = get_plugin_data( SYMLINKED_PLUGIN_BRANCH_FILE );
     $plugin_version = $plugin_data['Version'];
 
     wp_enqueue_style( 'symlinked-plugin-branch', plugins_url( '/css/style.css' , SYMLINKED_PLUGIN_BRANCH_FILE ), $plugin_version );
-    wp_enqueue_script( 'highlight-plugin', plugins_url( '/js/highlight-plugin.js', SYMLINKED_PLUGIN_BRANCH_FILE ), array(), $plugin_version, true );
 }
 
 add_filter( 'manage_plugins-network_columns', __NAMESPACE__ . '\add_git_info_column' );
