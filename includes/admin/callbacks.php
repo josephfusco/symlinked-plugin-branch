@@ -34,7 +34,7 @@ function enqueue_admin_styles_and_scripts( $hook ) {
     $plugin_data    = get_plugin_data( SYMLINKED_PLUGIN_BRANCH_FILE );
     $plugin_version = $plugin_data['Version'];
 
-    wp_enqueue_style( 'symlinked-plugin-branch', plugins_url( '/css/style.css' , SYMLINKED_PLUGIN_BRANCH_FILE ), $plugin_version );
+    wp_enqueue_style( 'symlinked-plugin-branch', plugins_url( '/assets/css/style.css' , SYMLINKED_PLUGIN_BRANCH_FILE ), $plugin_version );
 }
 
 add_filter( 'manage_plugins-network_columns', __NAMESPACE__ . '\add_git_info_column' );
@@ -114,15 +114,14 @@ function add_admin_bar_menu( $wp_admin_bar ) {
     );
 
     foreach ( $symlinked_plugins as $plugin ) {
+		$slug = sanitize_title( $plugin['name'] );
+
         $wp_admin_bar->add_node(
             [
-                'id'     => sanitize_key( 'symlinked-plugin-' . $plugin['name'] ),
-                'title'  => sprintf( '%s (%s)', $plugin['name'], $plugin['currentBranch'] ),
+                'id'     => sanitize_key( 'symlinked-plugin-' . $slug ),
+                'title'  => sprintf( '%s (%s)', $slug, $plugin['currentBranch'] ),
                 'parent' => 'symlinked-plugins',
-                'href'   => is_multisite() ? network_admin_url( 'plugins.php#' . $plugin['name'] ) : admin_url( 'plugins.php#' . $plugin['name'] ),
-                'meta'   => [
-                    'onclick' => "document.getElementById('" . sanitize_key( 'symlinked-plugin-' . $plugin['name'] ) . "').scrollIntoView();"
-                ],
+                'href'   => is_multisite() ? network_admin_url( 'plugins.php#' . $slug ) : admin_url( 'plugins.php#' . $slug ),
             ]
         );
     }
