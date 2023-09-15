@@ -1,6 +1,6 @@
 <?php
 /**
- * Various admin related callbacks used through the Faust plugin.
+ * Various admin related callbacks used through the plugin.
  *
  * @package Symlinked_Plugin_Branch
  */
@@ -8,79 +8,79 @@
 namespace Symlinked_Plugin_Branch\Admin;
 
 use function Symlinked_Plugin_Branch\Utilities\current_git_branch;
+use function Symlinked_Plugin_Branch\Utilities\get_plugins_with_symlinks;
+use function Symlinked_Plugin_Branch\Utilities\replace_home_with_tilde;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_admin_styles_and_scripts' );
 /**
  * Enqueue the plugin's admin styles.
  *
- * @param string $hook
- * @return void
+ * @param string $hook The current admin page.
  */
-function enqueue_admin_styles( $hook ) {
-	// Exit if not on plugins page.
-	if ( 'plugins.php' !== $hook ) {
-		return;
-	}
+function enqueue_admin_styles_and_scripts( $hook ) {
+    // Exit if not on plugins or network plugins page.
+    if ( 'plugins.php' !== $hook && 'plugins-network.php' !== $hook ) {
+        return;
+    }
 
-	wp_enqueue_style( 'symlinked-plugin-branch', plugins_url( '/css/style.css' , SYMLINKED_PLUGIN_BRANCH_FILE ) );
+    if ( ! function_exists( 'get_plugin_data' ) ) {
+        require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+    }
+
+    $plugin_data    = get_plugin_data( SYMLINKED_PLUGIN_BRANCH_FILE ); // Replace this with your main plugin file.
+    $plugin_version = $plugin_data['Version'];
+
+    wp_enqueue_style( 'symlinked-plugin-branch', plugins_url( '/css/style.css' , SYMLINKED_PLUGIN_BRANCH_FILE ), $plugin_version );
+    wp_enqueue_script( 'highlight-plugin', plugins_url( '/js/highlight-plugin.js', SYMLINKED_PLUGIN_BRANCH_FILE ), array(), $plugin_version, true );
 }
-add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_admin_styles' );
 
+add_filter( 'manage_plugins-network_columns', __NAMESPACE__ . '\add_git_info_column' );
+add_filter( 'manage_plugins_columns', __NAMESPACE__ . '\add_git_info_column' );
 /**
  * Filters the column headers for a list table on a specific screen.
  *
- * The dynamic portion of the hook name, `$screen->id`, refers to the
- * ID of a specific screen. For example, the screen ID for the Posts
- * list table is edit-post, so the filter for that screen would be
- * manage_edit-post_columns.
+ * @param string[] $columns An array of column header labels keyed by column ID.
  *
- * @param string[] $columns The column header labels keyed by column ID.
+ * @return string[] The modified array of column header labels.
  */
 function add_git_info_column( $columns ) {
 	$columns['git'] = __( 'Symlinked Branch', 'symlinked-plugin-branch' );
-
 	return $columns;
 }
-add_filter( 'manage_plugins_columns', __NAMESPACE__ . '\add_git_info_column' );
 
+add_action( 'manage_network_plugins_custom_column', __NAMESPACE__ . '\plugin_row_column_content', 10, 3 );
+add_action( 'manage_plugins_custom_column', __NAMESPACE__ . '\plugin_row_column_content', 10, 3 );
 /**
  * Fires inside each custom column of the Plugins list table.
  *
- * @param string $column_name Name of the column.
- * @param string $plugin_file Path to the plugin file relative to the plugins directory.
- * @param array  $plugin_data An array of plugin data. See `get_plugin_data()`
- *                            and the {@see 'plugin_row_meta'} filter for the list
- *                            of possible values.
+ * @param string $column_name The name of the custom column.
+ * @param string $plugin_file The plugin file.
+ * @param array  $plugin_data An array of plugin data.
  */
 function plugin_row_column_content( $column_name, $plugin_file, $plugin_data ) {
-	switch ( $column_name ) {
-		case "git": display_column_content( $plugin_file, $plugin_data ); break;
+	if ( 'git' === $column_name ) {
+		display_column_content( $plugin_file, $plugin_data );
 	}
 }
-add_action( 'manage_plugins_custom_column', __NAMESPACE__ . '\plugin_row_column_content', 10, 3 );
 
 /**
- * Displays the column's content.
+ * Displays the content of the custom column in the plugins list table.
  *
- * @param string $plugin_file Path to the plugin file relative to the plugins directory.
- * @param array  $plugin_data An array of plugin data. See `get_plugin_data()`
- *                            and the {@see 'plugin_row_meta'} filter for the list
- *                            of possible values.
- * @return void
+ * @param string $plugin_file The plugin file.
+ * @param array  $plugin_data An array of plugin data.
  */
 function display_column_content( $plugin_file, $plugin_data ) {
 	$plugin_path = dirname( trailingslashit( WP_PLUGIN_DIR ) . $plugin_file );
-
-	// Bail if there is no symbolic link for this plugin directory.
 	if ( ! is_link( $plugin_path ) ) {
 		return;
 	}
 
-	$target_path = readlink( $plugin_path );
-	$branch      = current_git_branch( $target_path );
+	$target_path = replace_home_with_tilde( readlink( $plugin_path ) );
+	$branch = current_git_branch( $target_path );
 
 	echo "
 		<div class='spb-root'>
@@ -93,4 +93,38 @@ function display_column_content( $plugin_file, $plugin_data ) {
 			</div>
 		</div>
 	";
+}
+
+add_action( 'admin_bar_menu', __NAMESPACE__ . '\add_admin_bar_menu', 100 );
+/**
+ * Adds an admin menu bar node.
+ *
+ * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance, passed by reference.
+ */
+function add_admin_bar_menu( $wp_admin_bar ) {
+    $symlinked_plugins = get_plugins_with_symlinks();
+    if ( empty( $symlinked_plugins ) ) {
+        return;
+    }
+
+    $wp_admin_bar->add_node(
+        [
+            'id'     => 'symlinked-plugins',
+            'title'  => __( 'Symlinked Plugins', 'symlinked-plugin-branch' ),
+        ]
+    );
+
+    foreach ( $symlinked_plugins as $plugin ) {
+        $wp_admin_bar->add_node(
+            [
+                'id'     => sanitize_key( 'symlinked-plugin-' . $plugin['name'] ),
+                'title'  => sprintf( '%s (%s)', $plugin['name'], $plugin['currentBranch'] ),
+                'parent' => 'symlinked-plugins',
+                'href'   => is_multisite() ? network_admin_url( 'plugins.php#' . $plugin['name'] ) : admin_url( 'plugins.php#' . $plugin['name'] ),
+                'meta'   => [
+                    'onclick' => "document.getElementById('" . sanitize_key( 'symlinked-plugin-' . $plugin['name'] ) . "').scrollIntoView();"
+                ],
+            ]
+        );
+    }
 }

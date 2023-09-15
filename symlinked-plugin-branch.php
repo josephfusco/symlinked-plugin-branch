@@ -26,3 +26,4 @@ define( 'SYMLINKED_PLUGIN_BRANCH_SLUG', dirname( plugin_basename( SYMLINKED_PLUG
 
 require SYMLINKED_PLUGIN_BRANCH_DIR . '/includes/utilities/functions.php';
 require SYMLINKED_PLUGIN_BRANCH_DIR . '/includes/admin/callbacks.php';
+require SYMLINKED_PLUGIN_BRANCH_DIR . '/includes/graphql/callbacks.php';
