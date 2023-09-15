@@ -44,8 +44,12 @@ function register_symlinked_plugin_branch_type() {
         'type' => [
             'list_of' => 'SymlinkedPlugin',
         ],
-        'description' => 'An array of all installed plugins with symlink information.',
+        'description' => __( 'An array of all installed plugins with symlink information.', 'symlinked-plugin-branch' ),
         'resolve'     => function() {
+            if ( ! current_user_can( 'manage_plugins') ) {
+                return null;
+            };
+
             return get_plugins_with_symlinks();
         },
     ]);
