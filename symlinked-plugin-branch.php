@@ -1,13 +1,14 @@
 <?php
 /**
- * Plugin Name:    Symlinked Plugin Branch
- * Plugin URI:     https://github.com/josephfusco/symlinked-plugin-branch/
- * Description:    Easily identify the current git branch of your symlinked WordPress plugins.
- * Version:        1.1.0
- * Author:         Joseph Fusco
- * Author URI:     https://josephfus.co/
- * License:        MIT
- * Text Domain:    symlinked-plugin-branch
+ * Plugin Name:       Symlinked Plugin Branch
+ * Plugin URI:        https://github.com/josephfusco/symlinked-plugin-branch/
+ * GitHub Plugin URI: https://github.com/wp-graphql/wp-graphql
+ * Description:       Easily identify the current git branch of your symlinked WordPress plugins.
+ * Version:           1.2.0
+ * Author:            Joseph Fusco
+ * Author URI:        https://josephfus.co/
+ * License:           MIT
+ * Text Domain:       symlinked-plugin-branch
  *
  * @package Symlinked_Plugin_Branch
  */
