@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2024-05-17
+
+- fix: display git branch of the current symlinked plugin
+
 ## [1.2.0] - 2023-09-15
 
 - Your plugin's home URL path will now display as a tilde for improved readability.
