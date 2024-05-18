@@ -4,7 +4,7 @@
  * Plugin URI:        https://github.com/josephfusco/symlinked-plugin-branch/
  * GitHub Plugin URI: https://github.com/wp-graphql/wp-graphql
  * Description:       Easily identify the current git branch of your symlinked WordPress plugins.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Author:            Joseph Fusco
  * Author URI:        https://josephfus.co/
  * License:           MIT

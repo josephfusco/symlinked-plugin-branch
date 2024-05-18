@@ -10,6 +10,7 @@ namespace Symlinked_Plugin_Branch\Admin;
 use function Symlinked_Plugin_Branch\Utilities\current_git_branch;
 use function Symlinked_Plugin_Branch\Utilities\get_plugins_with_symlinks;
 use function Symlinked_Plugin_Branch\Utilities\replace_home_with_tilde;
+use function Symlinked_Plugin_Branch\Utilities\get_git_path;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -73,25 +74,25 @@ function plugin_row_column_content( $column_name, $plugin_file, $plugin_data ) {
  * @param array  $plugin_data An array of plugin data.
  */
 function display_column_content( $plugin_file, $plugin_data ) {
-	$plugin_path = dirname( trailingslashit( WP_PLUGIN_DIR ) . $plugin_file );
-	if ( ! is_link( $plugin_path ) ) {
-		return;
-	}
+    $plugin_path = dirname( trailingslashit( WP_PLUGIN_DIR ) . $plugin_file );
+    if ( ! is_link( $plugin_path ) ) {
+        return;
+    }
 
-	$target_path = replace_home_with_tilde( readlink( $plugin_path ) );
-	$branch = current_git_branch( $target_path );
+    $target_path = replace_home_with_tilde( readlink( $plugin_path ) );
+    $branch = current_git_branch( $plugin_path );
 
-	echo "
-		<div class='spb-root'>
-			<div class='spb-row'>
-				<i class='spb-icon'></i>
-				$branch
-			</div>
-			<div class='spb-row spb-row-dark'>
-				<code>$target_path</code>
-			</div>
-		</div>
-	";
+    echo "
+        <div class='spb-root'>
+            <div class='spb-row'>
+                <i class='spb-icon'></i>
+                $branch
+            </div>
+            <div class='spb-row spb-row-dark'>
+                <code>$target_path</code>
+            </div>
+        </div>
+    ";
 }
 
 add_action( 'admin_bar_menu', __NAMESPACE__ . '\add_admin_bar_menu', 100 );
@@ -124,5 +125,25 @@ function add_admin_bar_menu( $wp_admin_bar ) {
                 'href'   => is_multisite() ? network_admin_url( 'plugins.php#' . $slug ) : admin_url( 'plugins.php#' . $slug ),
             ]
         );
+    }
+}
+
+add_action( 'admin_notices', __NAMESPACE__ . '\check_git_installation' );
+/**
+ * Checks if Git is installed and displays an admin notice if it is not.
+ * Also logs the output for debugging purposes.
+ *
+ * @return void
+ */
+function check_git_installation() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $git_path = get_git_path();
+    if ( ! $git_path ) {
+        echo '<div class="notice notice-error is-dismissible">
+            <p>Git is not installed or not in the PATH. Please install Git to enable plugin functionality.</p>
+        </div>';
     }
 }
