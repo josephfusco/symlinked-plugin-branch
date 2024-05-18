@@ -41,14 +41,12 @@ function register_symlinked_plugin_branch_type() {
     ]);
 
     register_graphql_field( 'RootQuery', 'symlinkedPlugins', [
-        'type' => [
-            'list_of' => 'SymlinkedPlugin',
-        ],
+        'type' => ['list_of' => 'SymlinkedPlugin'],
         'description' => __( 'An array of all installed plugins with symlink information.', 'symlinked-plugin-branch' ),
         'resolve'     => function() {
             if ( ! current_user_can( 'manage_plugins') ) {
                 return null;
-            };
+            }
 
             return get_plugins_with_symlinks();
         },
